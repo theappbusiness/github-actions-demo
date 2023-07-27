@@ -1,5 +1,5 @@
 # This is a basic workflow to help you get started with Actions
-name: Demo Basic - Build
+name: Demo Build
 
 # Controls when the workflow will run
 on:
