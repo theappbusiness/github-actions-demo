@@ -1,0 +1,26 @@
+name: Reusable - Build Checks
+on:
+  workflow_call:
+
+env:
+  CI_BUILD: true
+
+jobs:
+  unit-test-1:
+    name: Unit Test
+    runs-on: ubuntu-20.04
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Setup Android Runner
+        uses: ./.github/actions/setup-android-runner
+
+      # Gradle execution - clean and test
+      - name: Clean
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean testDebugUnitTest
+

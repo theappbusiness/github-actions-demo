@@ -32,21 +32,41 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout
+      - name: Checkout 🗄
         uses: actions/checkout@v3
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Setup Android Runner
+      - name: Setup Android Runner 🛠️
         uses: ./.github/actions/setup-android-runner
 
       # Gradle execution - clean
-      - name: Clean
+      - name: Clean 🧹
         uses: gradle/gradle-build-action@v2
         with:
           arguments: clean
 
       # Gradle execution - assemble with gradle scan and publish
-      - name: Build
+      - name: Build 🛠️
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :app:assemble --scan
+
+  checks:
+    name: Checks & Test
+    uses: ./.github/workflows/reusable-checks.yml
+
+  # Deploy build artefacts to target locations
+  deploy:
+    name: Deploy Builds 🚀
+    runs-on: ubuntu-latest
+    needs: [build, checks]
+
+    steps:
+      - name: Deploy to PlayStore
+        run: |
+          echo "Pretend to upload to PlayStore 🤖"
+
+      - name: Create a release
+        run: |
+          echo "Pretend to create release 🔖"
+          
