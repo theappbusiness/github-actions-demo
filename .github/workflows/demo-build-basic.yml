@@ -75,9 +75,9 @@ jobs:
           file-path: app/build/outputs/apk/release/app-release.apk
 
       # Analyze APK
-      - name: Analyse Debug Build - Same Repo 🛠️
+      - name: Analyse Debug Build - External Repo 🛠️
         id: apk-info-debug
-        uses: ./.github/actions/apkanalyzer-checks
+        uses: theappbusiness/apkanalyzer-checks@main
         with:
           file-path: app/build/outputs/apk/debug/app-debug.apk
           generate-summary: false
