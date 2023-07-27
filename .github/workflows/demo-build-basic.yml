@@ -48,8 +48,50 @@ jobs:
       # Gradle execution - assemble with gradle scan and publish
       - name: Build 🛠️
         uses: gradle/gradle-build-action@v2
+        env:
+          SIGNING_KEYSTORE_STORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_STORE_PASSWORD }}
+          SIGNING_KEYSTORE_KEY_ALIAS: ${{ secrets.SIGNING_KEYSTORE_KEY_ALIAS }}
+          SIGNING_KEYSTORE_KEY_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_KEY_PASSWORD }}
         with:
           arguments: :app:assemble --scan
+
+      # Upload build artefacts
+      - name: Upload apk
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          retention-days: 1
+          name: "Build Artefacts"
+          path: |
+           app/build/outputs/apk/*/*.apk
+           app/build/outputs/logs/**
+           app/build/outputs/mapping/** 
+
+      # Analyze APK
+      - name: Analyse Release Build - Same Repo 🛠️
+        id: apk-info-release
+        uses: ./.github/actions/apkanalyzer-checks
+        with:
+          file-path: app/build/outputs/apk/release/app-release.apk
+
+      # Analyze APK
+      - name: Analyse Debug Build - Same Repo 🛠️
+        id: apk-info-debug
+        uses: ./.github/actions/apkanalyzer-checks
+        with:
+          file-path: app/build/outputs/apk/debug/app-debug.apk
+          generate-summary: false
+
+      - name: Capture Info from APK Analyze
+        run: |
+          {
+            echo "### Outputs from apkanalyzer-checks action"
+            echo ""
+            echo "| Description | File Size | Download Size | Download Size Bytes |"
+            echo "| ----------- | --------- | ------------- | ------------------- |"
+            echo "| Release | ${{ steps.apk-info-release.outputs.apk-file-size }} | ${{ steps.apk-info-release.outputs.apk-download-size }} | ${{ steps.apk-info-release.outputs.apk-download-size-bytes }} |"
+            echo "| Debug | ${{ steps.apk-info-debug.outputs.apk-file-size }} | ${{ steps.apk-info-debug.outputs.apk-download-size }} | ${{ steps.apk-info-debug.outputs.apk-download-size-bytes }} |"
+          } >> $GITHUB_STEP_SUMMARY
 
   checks:
     name: Checks & Test
@@ -64,9 +106,12 @@ jobs:
     steps:
       - name: Deploy to PlayStore
         run: |
-          echo "Pretend to upload to PlayStore 🤖"
-
-      - name: Create a release
-        run: |
-          echo "Pretend to create release 🔖"
+          {
+            echo "### Deployment Summary"
+            echo ""
+            echo "This Github Action demo is now complete"
+            echo "Thank you"
+            echo ""
+            echo "Enjoy your friday 🎉"
+          } >> $GITHUB_STEP_SUMMARY
           
