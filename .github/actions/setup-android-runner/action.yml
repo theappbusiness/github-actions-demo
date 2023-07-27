@@ -1,0 +1,33 @@
+name: "Setup Android Environment"
+description: "Setup Android Build Environment"
+
+runs:
+  using: "composite"
+
+  steps:
+
+    - name: Set up Java ⚙️
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+
+    - name: Gradlew Permission ⚙️
+      run: chmod +x gradlew
+      shell: bash
+
+    - name: Gradle Wrapper Validation 🧐
+      uses: gradle/wrapper-validation-action@v1
+      with:
+        min-wrapper-count: 1
+        allow-snapshots: false
+
+    - name: Setup Gradle ⚙️
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-home-cache-cleanup: true
+        generate-job-summary: true
+
+    - name: Setup GradleW ⚙️
+      run: ./gradlew
+      shell: bash
