@@ -6,7 +6,7 @@ env:
   CI_BUILD: true
 
 jobs:
-  unit-test-1:
+  unit-test:
     name: Unit Test
     runs-on: ubuntu-20.04
     steps:
@@ -19,8 +19,25 @@ jobs:
         uses: ./.github/actions/setup-android-runner
 
       # Gradle execution - clean and test
-      - name: Clean
+      - name: Test
         uses: gradle/gradle-build-action@v2
         with:
           arguments: clean testDebugUnitTest
 
+  static-checks:
+    name: Static Analysis
+    runs-on: ubuntu-20.04
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Setup Android Runner
+        uses: ./.github/actions/setup-android-runner
+
+      # Gradle execution - clean and test
+      - name: Lint Check
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: lint
