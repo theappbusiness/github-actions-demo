@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.loadProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -20,10 +22,33 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("${rootDir}/signing/appsign.keystore")
+            if (rootProject.ext.get("CI_BUILD") == true) {
+                storePassword = System.getenv("SIGNING_KEYSTORE_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEYSTORE_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEYSTORE_KEY_PASSWORD")
+            } else {
+                val properties = loadProperties("${rootDir}/signing/signing.properties")
+                storePassword = properties.getProperty("SIGNING_KEYSTORE_STORE_PASSWORD")
+                keyAlias = properties.getProperty("SIGNING_KEYSTORE_KEY_ALIAS")
+                keyPassword = properties.getProperty("SIGNING_KEYSTORE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+        }
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
