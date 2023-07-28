@@ -50,3 +50,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :app:assemble --scan
+        env:        
+          SIGNING_KEYSTORE_STORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_STORE_PASSWORD }}
+          SIGNING_KEYSTORE_KEY_ALIAS: ${{ secrets.SIGNING_KEYSTORE_KEY_ALIAS }}
+          SIGNING_KEYSTORE_KEY_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_KEY_PASSWORD }}
