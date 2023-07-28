@@ -45,12 +45,13 @@ runs:
         downloadSize=$(apkanalyzer -h apk download-size $filePath)
         downloadSizeBytes=$(apkanalyzer apk download-size $filePath)
 
+        echo "apkFileName=$fileName" >> $GITHUB_OUTPUT
         {
-          echo "apkFileName=$fileName"
           echo "apkFileSize=$fileSize"
           echo "apkDownloadSize=$downloadSize"
-          echo "apkDownloadSizeBytes=$downloadSizeBytes"
         } >> $GITHUB_OUTPUT
+
+        echo "::set-output name=apkDownloadSizeBytes::$downloadSizeBytes"
 
     - name: Create Summary
       id: apk-analyze-summary
